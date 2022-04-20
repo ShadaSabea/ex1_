@@ -8,11 +8,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-//test functions:
-int returnSize(RLEList list);
-
-//-------------------------------------------------------------------------------
-
 /**
 * Run Length Encoding List
 *
