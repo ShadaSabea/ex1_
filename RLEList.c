@@ -16,8 +16,6 @@ RLEList RLEListCreate()
     {
         return NULL;
     }
-    newList->val='/0';
-    newList->valCount=1;
     newList->next=NULL;
     newList->previous=NULL;
     return newList;
