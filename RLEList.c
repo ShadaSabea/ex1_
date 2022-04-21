@@ -5,8 +5,8 @@
 typedef struct RLEList_t{
     char val;
     int valCount;
-    struct node* next;
-    struct node* previous;
+    struct list* next;
+    struct list* previous;
 }*RLEList;
 
 RLEList RLEListCreate()
