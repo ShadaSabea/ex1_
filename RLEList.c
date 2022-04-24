@@ -2,43 +2,32 @@
 #include<stdlib.h>
 #include <assert.h>
 
-//-----------------#define---------------
+
 #define NULL_LIST -1
 #define ILLEGAL_DATA 0
 
-//----------------------------------------
-static int countNodes(RLEList list);
-static int numOfDigits(RLEList list);
 
 typedef struct node{
     char val;
     int valCount;
     struct node* next;
-    struct node* previous;
-    //---------------לא השתמשתי---------------
 }*Node;
 
+//not available for RLElist interface user
+static int countNodes(RLEList list);
+static int numOfDigits(RLEList list);
+Node createNode(char val);
+Node getLastNode(RLEList list);
+static void mergeNodes(RLEList list);
+
+
+//listLen=0 when listHead is NULL
 struct RLEList_t{
     Node listHead;
     int listLen;
-    //--------לא השתמשתי -------------------
 };
+//implement the functions here
 
-
-
-RLEList RLEListCreate()
-{
-    RLEList newList = malloc(sizeof(*newList));
-    if(!newList)
-    {
-        return NULL;
-    }
-    assert(newList);
-    //--------------------------------------------------
-    newList->listHead=NULL;
-    newList->listLen = 0;
-    return newList;
-}
 
 Node createNode(char val)
 {
@@ -48,13 +37,39 @@ Node createNode(char val)
         return NULL;
     }
     assert(newNode);
-    //-----------------------------------------------------
     newNode->val=val;
     newNode->valCount=1;
     newNode->next=NULL;
-    newNode->previous=NULL;
     return newNode;
 }
+
+Node getLastNode(RLEList list)
+{
+    Node currentNode = list->listHead;
+    if(currentNode == NULL)
+    {
+        return NULL;
+    }
+    while(currentNode->next != NULL)
+    {
+        currentNode=currentNode->next;
+    }
+    return currentNode;
+}
+
+RLEList RLEListCreate()
+{
+    RLEList newList = malloc(sizeof(*newList));
+    if(!newList)
+    {
+        return NULL;
+    }
+    assert(newList);
+    newList->listHead=NULL;
+    newList->listLen = 0;
+    return newList;
+}
+
 
 void RLEListDestroy(RLEList list)
 {
@@ -69,27 +84,101 @@ void RLEListDestroy(RLEList list)
         list->listHead=list->listHead->next;
         free(toDelete);
     }
-    free(list);
+    free(list); //free the list wrapper
 }
+
+/**
+ * Operation: get last node in the list if it contains a char
+ * that matches the one to be pushed then just increment
+ * that node counter by one, otherwise add a new node and 
+ * set the first char to one 
+ */
+
+RLEListResult RLEListAppend(RLEList list, char value)
+{
+    if(list == NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    Node lastNode = getLastNode(list);
+    if((lastNode == NULL) || lastNode->val != value)
+    {
+        Node newNode = createNode(value);
+        if(newNode == NULL)
+        {
+            return RLE_LIST_OUT_OF_MEMORY;
+        }
+        if(lastNode==NULL)
+        {
+            list->listHead=newNode;
+        }
+        else
+        {
+            lastNode->next=newNode;
+        }
+    }
+    else
+    {
+        lastNode->valCount++;
+    }
+    list->listLen++;
+    return RLE_LIST_SUCCESS;
+}
+
 int RLEListSize(RLEList list)
 {
-    int listSize=0;
     if(!list)
     {
         return NULL_LIST;
     }
-    else
+    return list->listLen;
+}
 
 
+RLEListResult RLEListRemove(RLEList list, int index)
+{
+    index+=1;
+    if(list == NULL)
     {
-        for (Node ptr = list->listHead; ptr != NULL; ptr = ptr->next)
-        {
-            listSize += ptr->valCount;
-        }
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    if( (index > list->listLen) || (index <= 0) )        ///////////////////////////////////////////////////////////////////////////
+    {
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
 
-    return listSize;
+    Node currentNode = list->listHead;
+    Node previousNode = NULL;
+    int currentApperanceSum = currentNode->valCount;
+    while (currentApperanceSum<index)
+    {
+        previousNode = currentNode;
+        currentNode = currentNode->next;
+        currentApperanceSum += currentNode->valCount;
+    }
+
+    if(currentNode->valCount > 1)
+    {
+        currentNode->valCount-=1;
+    }
+    else
+    {
+        if(currentNode==list->listHead)
+        {
+            list->listHead=currentNode->next;
+        }
+        else
+        {
+            previousNode->next=currentNode->next;
+
+        }
+        mergeNodes(list);
+        free(currentNode);
+    }
+    return RLE_LIST_SUCCESS;
 }
+
+
 char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(!list)
@@ -97,7 +186,6 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         *result=RLE_LIST_NULL_ARGUMENT;
         return ILLEGAL_DATA;
     }
-    //int listSize=RLEListSize(list);
     if(index<0)
     {
         *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
@@ -124,6 +212,29 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
     return ILLEGAL_DATA;
 }
+
+
+RLEListResult RLEListMap(RLEList list, MapFunction map_function)
+{
+    if(map_function==NULL || list==NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    if(list->listLen == 0)
+    {
+        return RLE_LIST_SUCCESS;
+    }
+    Node currentNode = list->listHead;
+    while(currentNode != NULL)
+    {
+        currentNode->val=map_function(currentNode->val);
+        currentNode = currentNode->next;
+    }
+    mergeNodes(list);
+    return RLE_LIST_SUCCESS;
+}
+
+
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
     if (!list)
@@ -152,22 +263,8 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     return string;
 
 }
-static int countNodes(RLEList list)
-{
-    if(!list)
-    {
-        return ILLEGAL_DATA;
-    }
-    assert(list);
-    int nodeCounter=0;
-    Node ptr = list->listHead;
-    while(ptr)
-    {
-        nodeCounter++;
-        ptr=ptr->next;
-    }
-    return nodeCounter;
-}
+
+
 static int numOfDigits(RLEList list)
 {
     int counter=0;
@@ -179,7 +276,7 @@ static int numOfDigits(RLEList list)
         while(number>0)
         {
             counter++;
-            number=number/10;
+            number/=10;
         }
         ptr=ptr->next;
     }
@@ -187,3 +284,70 @@ static int numOfDigits(RLEList list)
 }
 
 
+static void mergeNodes(RLEList list)
+{
+    Node currentNode = list->listHead;
+    while (currentNode != NULL)
+    {
+        while(currentNode->next!= NULL && currentNode->val==currentNode->next->val)
+        {
+            currentNode->valCount+=currentNode->next->valCount;
+            Node tmp = currentNode->next->next;
+            free(currentNode->next);
+            currentNode->next = tmp;
+        }
+        currentNode = currentNode->next;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+char mapping(char value)
+{
+    if(value=='a') return 'm';
+    if(value=='z') return 'm';
+    if(value=='k') return 'm';
+    if(value=='p') return 'm';
+    return value;
+}
+
+void printNode(Node node)
+{
+    printf("val: %c\n",node->val);
+    printf("valCount: %d\n",node->valCount);
+    printf("next: %p\n", (void *) node->next);
+}
+
+//------------------------------------------------------------------------------
+//test function
+int main()
+{
+    RLEList tmpList = RLEListCreate();
+    RLEListAppend(tmpList, 'a');
+    RLEListAppend(tmpList, 'a');
+    RLEListAppend(tmpList, 'z');
+    RLEListAppend(tmpList, 'z');
+    RLEListAppend(tmpList, 'z');
+    RLEListAppend(tmpList, 'k');
+    RLEListAppend(tmpList, 'p');
+    RLEListAppend(tmpList, 'p');
+ 
+    printf("number of digits:%d\n",numOfDigits(tmpList));
+
+    RLEListMap(tmpList,mapping);
+    
+    printf("return identifier: %d\n",RLEListRemove(tmpList,3));
+
+    RLEListDestroy(tmpList);
+    return 0;
+}
+//------------------------------------------------------------------------------
