@@ -78,8 +78,8 @@ int RLEListSize(RLEList list)
         return NULL_LIST;
     }
     else
-    
-    
+
+
     {
         for (Node ptr = list->listHead; ptr != NULL; ptr = ptr->next)
         {
@@ -132,7 +132,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     }
     Node nodePtr = list->listHead;
     int listLength=countListLength(list);
-    char* string = malloc( 2*sizeof(*string)*listLength+1);
+    char* string = malloc( sizeof(*string)*(listLength+1);
     if (string==NULL)
     {
         *result =RLE_LIST_ERROR;
@@ -146,6 +146,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         stringPtr=stringPtr+neededSpace;
         nodePtr=nodePtr->next;
     }
+    *result=RLE_LIST_SUCCESS;
     return string;
 
 }
@@ -161,5 +162,21 @@ static int countListLength(RLEList list)
     }
     return nodeCounter;
 }
-
+static int f(RLEList list)
+{
+    int counter=0;
+    Node ptr = list->listHead;
+    while(ptr)
+    {
+        int number=ptr->valCount;
+        assert(number>0);
+        while(number>0)
+        {
+            counter++;
+            number=number/10;
+        }
+        ptr=ptr->next;
+    }
+    return counter;
+}
 
