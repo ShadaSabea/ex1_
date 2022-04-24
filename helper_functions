@@ -1,1 +1,17 @@
-//
+
+static int f(RLEList list)
+{
+    int counter=1;
+    Node ptr = list->listHead;
+    while(ptr)
+    {
+        int number=ptr->valCount;
+        assert(number>0);
+        while(number%10!=0)
+        {
+            counter++;
+        }
+        ptr=ptr->next;
+    }
+    return counter;
+}
