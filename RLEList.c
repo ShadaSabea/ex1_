@@ -7,18 +7,20 @@
 #define ILLEGAL_DATA 0
 
 //----------------------------------------
-static int nodeNumber(RLEList list);
+static int countListLength(RLEList list);
 
 typedef struct node{
     char val;
     int valCount;
     struct node* next;
     struct node* previous;
+    //---------------לא השתמשתי---------------
 }*Node;
 
 struct RLEList_t{
     Node listHead;
     int listLen;
+    //--------לא השתמשתי -------------------
 };
 
 
@@ -31,6 +33,7 @@ RLEList RLEListCreate()
         return NULL;
     }
     assert(newList);
+    //--------------------------------------------------
     newList->listHead=NULL;
     newList->listLen = 0;
     return newList;
@@ -39,11 +42,12 @@ RLEList RLEListCreate()
 Node createNode(char val)
 {
     Node newNode=malloc(sizeof(*newNode));
-    assert(newNode);
     if(!newNode)
     {
         return NULL;
     }
+    assert(newNode);
+    //-----------------------------------------------------
     newNode->val=val;
     newNode->valCount=1;
     newNode->next=NULL;
@@ -74,6 +78,8 @@ int RLEListSize(RLEList list)
         return NULL_LIST;
     }
     else
+    
+    
     {
         for (Node ptr = list->listHead; ptr != NULL; ptr = ptr->next)
         {
@@ -81,18 +87,17 @@ int RLEListSize(RLEList list)
         }
     }
 
-   return listSize;
+    return listSize;
 }
 char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
-    char requiredCharacter;
     if(!list)
     {
         *result=RLE_LIST_NULL_ARGUMENT;
         return ILLEGAL_DATA;
     }
-    int listSize=RLEListSize(list);
-    if(index<1 || index>listSize)
+    //int listSize=RLEListSize(list);
+    if(index<0)
     {
         *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
         return ILLEGAL_DATA;
@@ -100,7 +105,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     else
     {
         Node ptr = list->listHead;
-        int indexOfFirstAppearance=1;
+        int indexOfFirstAppearance=0;
         int indexOfLastAppearance=0;
         while(ptr)
         {
@@ -108,12 +113,53 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
             if (index>=indexOfFirstAppearance && index<=indexOfLastAppearance)
             {
                 *result=RLE_LIST_SUCCESS;
-                requiredCharacter=ptr->val;
+                return ptr->val;
             }
             indexOfFirstAppearance=indexOfLastAppearance+1;
             ptr=ptr->next;
 
         }
     }
-    return requiredCharacter;
+    *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    return ILLEGAL_DATA;
 }
+char* RLEListExportToString(RLEList list, RLEListResult* result)
+{
+    if (!list)
+    {
+        *result=RLE_LIST_NULL_ARGUMENT;
+        return NULL;
+    }
+    Node nodePtr = list->listHead;
+    int listLength=countListLength(list);
+    char* string = malloc( 2*sizeof(*string)*listLength+1);
+    if (string==NULL)
+    {
+        *result =RLE_LIST_ERROR;
+        return NULL;
+    }
+    assert(string);
+    char* stringPtr=string;
+    while (nodePtr)
+    {
+        int neededSpace=sprintf(stringPtr,"%c%d\n",nodePtr->val,nodePtr->valCount);
+        stringPtr=stringPtr+neededSpace;
+        nodePtr=nodePtr->next;
+    }
+    return string;
+
+}
+static int countListLength(RLEList list)
+{
+    assert(list);
+    int nodeCounter=0;
+    Node ptr = list->listHead;
+    while(ptr)
+    {
+        nodeCounter++;
+        ptr=ptr->next;
+    }
+    return nodeCounter;
+}
+
+
