@@ -7,7 +7,8 @@
 #define ILLEGAL_DATA 0
 
 //----------------------------------------
-static int countListLength(RLEList list);
+static int countNodes(RLEList list);
+static int numOfDigits(RLEList list);
 
 typedef struct node{
     char val;
@@ -131,8 +132,9 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         return NULL;
     }
     Node nodePtr = list->listHead;
-    int listLength=countListLength(list);
-    char* string = malloc( sizeof(*string)*(listLength+1);
+    int nodesNumber=countNodes(list);
+    int digitsNumber= numOfDigits(list);
+    char* string = malloc( sizeof(*string)*((2*nodesNumber)+digitsNumber+1));
     if (string==NULL)
     {
         *result =RLE_LIST_ERROR;
@@ -150,8 +152,12 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     return string;
 
 }
-static int countListLength(RLEList list)
+static int countNodes(RLEList list)
 {
+    if(!list)
+    {
+        return ILLEGAL_DATA;
+    }
     assert(list);
     int nodeCounter=0;
     Node ptr = list->listHead;
@@ -162,7 +168,7 @@ static int countListLength(RLEList list)
     }
     return nodeCounter;
 }
-static int f(RLEList list)
+static int numOfDigits(RLEList list)
 {
     int counter=0;
     Node ptr = list->listHead;
@@ -179,4 +185,5 @@ static int f(RLEList list)
     }
     return counter;
 }
+
 
