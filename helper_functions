@@ -15,3 +15,20 @@ static int f(RLEList list)
     }
     return counter;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+static int countNodes(RLEList list)
+{
+    if(!list)
+    {
+        return ILLEGAL_DATA;
+    }
+    assert(list);
+    int nodeCounter=0;
+    Node ptr = list->listHead;
+    while(ptr)
+    {
+        nodeCounter++;
+        ptr=ptr->next;
+    }
+    return nodeCounter;
+}
