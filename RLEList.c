@@ -19,6 +19,7 @@ static int numOfDigits(RLEList list);
 Node createNode(char val);
 Node getLastNode(RLEList list);
 static void mergeNodes(RLEList list);
+static void resultSaver(RLEListResult *result, RLEListResult result_identifier);
 
 
 //listLen=0 when listHead is NULL
@@ -42,6 +43,25 @@ Node createNode(char val)
     newNode->next=NULL;
     return newNode;
 }
+
+
+static int countNodes(RLEList list)
+{
+    if(!list)
+    {
+        return ILLEGAL_DATA;
+    }
+    assert(list);
+    int nodeCounter=0;
+    Node ptr = list->listHead;
+    while(ptr)
+    {
+        nodeCounter++;
+        ptr=ptr->next;
+    }
+    return nodeCounter;
+}
+
 
 Node getLastNode(RLEList list)
 {
@@ -142,7 +162,7 @@ RLEListResult RLEListRemove(RLEList list, int index)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if( (index > list->listLen) || (index <= 0) )        ///////////////////////////////////////////////////////////////////////////
+    if( (index > list->listLen) || (index <= 0) )
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
@@ -175,6 +195,7 @@ RLEListResult RLEListRemove(RLEList list, int index)
         mergeNodes(list);
         free(currentNode);
     }
+    list->listLen--;
     return RLE_LIST_SUCCESS;
 }
 
@@ -183,12 +204,12 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(!list)
     {
-        *result=RLE_LIST_NULL_ARGUMENT;
+        resultSaver(result,RLE_LIST_NULL_ARGUMENT);
         return ILLEGAL_DATA;
     }
     if(index<0)
     {
-        *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        resultSaver(result,RLE_LIST_INDEX_OUT_OF_BOUNDS);
         return ILLEGAL_DATA;
     }
     else
@@ -201,7 +222,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
             indexOfLastAppearance=indexOfFirstAppearance+(ptr->val)-1;
             if (index>=indexOfFirstAppearance && index<=indexOfLastAppearance)
             {
-                *result=RLE_LIST_SUCCESS;
+                resultSaver(result,RLE_LIST_SUCCESS);
                 return ptr->val;
             }
             indexOfFirstAppearance=indexOfLastAppearance+1;
@@ -209,7 +230,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 
         }
     }
-    *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    resultSaver(result,RLE_LIST_INDEX_OUT_OF_BOUNDS);
     return ILLEGAL_DATA;
 }
 
@@ -239,7 +260,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
     if (!list)
     {
-        *result=RLE_LIST_NULL_ARGUMENT;
+        resultSaver(result,RLE_LIST_NULL_ARGUMENT);
         return NULL;
     }
     Node nodePtr = list->listHead;
@@ -248,7 +269,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     char* string = malloc( sizeof(*string)*((2*nodesNumber)+digitsNumber+1));
     if (string==NULL)
     {
-        *result =RLE_LIST_ERROR;
+        resultSaver(result,RLE_LIST_ERROR);
         return NULL;
     }
     assert(string);
@@ -259,7 +280,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         stringPtr=stringPtr+neededSpace;
         nodePtr=nodePtr->next;
     }
-    *result=RLE_LIST_SUCCESS;
+    resultSaver(result,RLE_LIST_SUCCESS);
     return string;
 
 }
@@ -301,6 +322,15 @@ static void mergeNodes(RLEList list)
 }
 
 
+static void resultSaver(RLEListResult *result, RLEListResult result_identifier)
+{
+    if(result != NULL)
+    {
+        *result = result_identifier;
+    }
+}
+
+
 
 
 
@@ -329,25 +359,25 @@ void printNode(Node node)
 
 //------------------------------------------------------------------------------
 //test function
-int main()
-{
-    RLEList tmpList = RLEListCreate();
-    RLEListAppend(tmpList, 'a');
-    RLEListAppend(tmpList, 'a');
-    RLEListAppend(tmpList, 'z');
-    RLEListAppend(tmpList, 'z');
-    RLEListAppend(tmpList, 'z');
-    RLEListAppend(tmpList, 'k');
-    RLEListAppend(tmpList, 'p');
-    RLEListAppend(tmpList, 'p');
- 
-    printf("number of digits:%d\n",numOfDigits(tmpList));
-
-    RLEListMap(tmpList,mapping);
-    
-    printf("return identifier: %d\n",RLEListRemove(tmpList,3));
-
-    RLEListDestroy(tmpList);
-    return 0;
-}
+//int main()
+//{
+//    RLEList tmpList = RLEListCreate();
+//    RLEListAppend(tmpList, 'a');
+//    RLEListAppend(tmpList, 'a');
+//    RLEListAppend(tmpList, 'z');
+//    RLEListAppend(tmpList, 'z');
+//    RLEListAppend(tmpList, 'z');
+//    RLEListAppend(tmpList, 'k');
+//    RLEListAppend(tmpList, 'p');
+//    RLEListAppend(tmpList, 'p');
+// 
+//    printf("number of digits:%d\n",numOfDigits(tmpList));
+//
+//    RLEListMap(tmpList,mapping);
+//    
+//    printf("return identifier: %d\n",RLEListRemove(tmpList,3));
+//
+//    RLEListDestroy(tmpList);
+//    return 0;
+//}
 //------------------------------------------------------------------------------
