@@ -1,4 +1,4 @@
-#include "AsciiArt.h"
+#include "AsciiArtTool.h"
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -11,6 +11,7 @@ RLEList asciiArtRead(FILE* in_stream)
         return NULL;
     }
     RLEList list=RLEListCreate();
+    //check if null ////////////////////////////////////////////////////////////////////////////
     char buffer[CHUNK_SIZE];
     while(fgets(buffer,CHUNK_SIZE,in_stream) != NULL)
     {
@@ -59,6 +60,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE* out_stream)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    fprintf(out,out_stream);
+    fprintf(out_stream,out);
+    free(out);
     return RLE_LIST_SUCCESS;
 }
