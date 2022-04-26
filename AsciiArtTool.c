@@ -11,7 +11,10 @@ RLEList asciiArtRead(FILE* in_stream)
         return NULL;
     }
     RLEList list=RLEListCreate();
-    //check if null ////////////////////////////////////////////////////////////////////////////
+    if(!list)
+    {
+        return NULL;
+    }
     char buffer[CHUNK_SIZE];
     while(fgets(buffer,CHUNK_SIZE,in_stream) != NULL)
     {
