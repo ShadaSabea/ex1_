@@ -24,15 +24,25 @@ RLEList asciiArtRead(FILE* in_stream)
 }
 
 
-int main()
+
+RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
 {
-    FILE* testFile = fopen("fileName","r");
-    if(!testFile)
+    if(!list || !out_stream)
     {
-        printf("cannot open file\n");
-        return 0;
+        return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEList list=asciiArtRead(testFile);
-    free(list);
-    return 0;
+    int listLen = RLEListSize(list);
+    RLEListResult result;
+    char currentChar[2];
+    currentChar[1]='\0';
+    for (int i = 0; i < listLen; i++)
+    {
+        currentChar[0] = RLEListGet(list, i ,&result);
+        if(result != RLE_LIST_SUCCESS)
+        {
+            return result;
+        }
+        fputs(currentChar,out_stream);
+    }
+    return result;
 }
