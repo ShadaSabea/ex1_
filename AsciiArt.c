@@ -46,3 +46,19 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
     }
     return result;
 }
+
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE* out_stream)
+{
+   if (!list || !out_stream)
+   {
+       return RLE_LIST_NULL_ARGUMENT;
+   }
+    RLEListResult result;
+    char* out=RLEListExportToString(list,&result);
+    if(!out)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    fprintf(out,out_stream);
+    return RLE_LIST_SUCCESS;
+}
