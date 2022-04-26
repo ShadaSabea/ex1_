@@ -16,8 +16,8 @@ typedef struct node{
 //not available for RLElist interface user
 static int countNodes(RLEList list);
 static int numOfDigits(RLEList list);
-Node createNode(char val);
-Node getLastNode(RLEList list);
+static Node createNode(char val);
+static Node getLastNode(RLEList list);
 static void mergeNodes(RLEList list);
 static void resultSaver(RLEListResult *result, RLEListResult result_identifier);
 
@@ -30,7 +30,7 @@ struct RLEList_t{
 //implement the functions here
 
 
-Node createNode(char val)
+static Node createNode(char val)
 {
     Node newNode=malloc(sizeof(*newNode));
     if(!newNode)
@@ -63,7 +63,7 @@ static int countNodes(RLEList list)
 }
 
 
-Node getLastNode(RLEList list)
+static Node getLastNode(RLEList list)
 {
     Node currentNode = list->listHead;
     if(currentNode == NULL)
