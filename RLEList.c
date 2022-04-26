@@ -104,15 +104,9 @@ void RLEListDestroy(RLEList list)
         list->listHead=list->listHead->next;
         free(toDelete);
     }
-    free(list); //free the list wrapper
+    free(list);
 }
 
-/**
- * Operation: get last node in the list if it contains a char
- * that matches the one to be pushed then just increment
- * that node counter by one, otherwise add a new node and 
- * set the first char to one 
- */
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
@@ -329,55 +323,3 @@ static void resultSaver(RLEListResult *result, RLEListResult result_identifier)
         *result = result_identifier;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-char mapping(char value)
-{
-    if(value=='a') return 'm';
-    if(value=='z') return 'm';
-    if(value=='k') return 'm';
-    if(value=='p') return 'm';
-    return value;
-}
-
-void printNode(Node node)
-{
-    printf("val: %c\n",node->val);
-    printf("valCount: %d\n",node->valCount);
-    printf("next: %p\n", (void *) node->next);
-}
-
-//------------------------------------------------------------------------------
-//test function
-//int main()
-//{
-//    RLEList tmpList = RLEListCreate();
-//    RLEListAppend(tmpList, 'a');
-//    RLEListAppend(tmpList, 'a');
-//    RLEListAppend(tmpList, 'z');
-//    RLEListAppend(tmpList, 'z');
-//    RLEListAppend(tmpList, 'z');
-//    RLEListAppend(tmpList, 'k');
-//    RLEListAppend(tmpList, 'p');
-//    RLEListAppend(tmpList, 'p');
-// 
-//    printf("number of digits:%d\n",numOfDigits(tmpList));
-//
-//    RLEListMap(tmpList,mapping);
-//    
-//    printf("return identifier: %d\n",RLEListRemove(tmpList,3));
-//
-//    RLEListDestroy(tmpList);
-//    return 0;
-//}
-//------------------------------------------------------------------------------
