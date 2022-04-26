@@ -6,8 +6,7 @@
 
 
 /**
- * @brief 
- *   Converts the contents in a given file to RLEList
+ * @brief Converts the contents in a given file to RLEList
  * @param in_stream - A descriptor to a file containing ascii art image
  * @return 
  *   A new RLEList that contains the characters in in_stream
