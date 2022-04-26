@@ -77,6 +77,7 @@ Node getLastNode(RLEList list)
     return currentNode;
 }
 
+
 RLEList RLEListCreate()
 {
     RLEList newList = malloc(sizeof(*newList));
@@ -104,7 +105,7 @@ void RLEListDestroy(RLEList list)
         list->listHead=list->listHead->next;
         free(toDelete);
     }
-    free(list);
+    free(list); 
 }
 
 
@@ -213,7 +214,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         int indexOfLastAppearance=0;
         while(ptr)
         {
-            indexOfLastAppearance=indexOfFirstAppearance+(ptr->val)-1;
+            indexOfLastAppearance=indexOfFirstAppearance+(ptr->valCount)-1;
             if (index>=indexOfFirstAppearance && index<=indexOfLastAppearance)
             {
                 resultSaver(result,RLE_LIST_SUCCESS);
@@ -259,7 +260,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     }
     Node nodePtr = list->listHead;
     int nodesNumber=countNodes(list);
-    int digitsNumber= numOfDigits(list);
+    int digitsNumber=numOfDigits(list);
     char* string = malloc( sizeof(*string)*((2*nodesNumber)+digitsNumber+1));
     if (string==NULL)
     {
