@@ -83,7 +83,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    RLEList sourceList = RLEListCreate();
+    RLEList sourceList = asciiArtRead(sourceStream);
     if(!sourceList)
     {
         printf("Error: memory allocation failed!\n");
@@ -91,7 +91,6 @@ int main(int argc, char **argv)
         fclose(targetStream);
         return 0;
     }
-    sourceList = asciiArtRead(sourceStream);
     RLEListResult result = convertImage(argv[1],sourceList,targetStream);
     if(result!=RLE_LIST_SUCCESS)
     {
