@@ -1,4 +1,4 @@
-#include "AsciiArtTool.h"
+ #include "AsciiArtTool.h"
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -44,6 +44,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
         currentChar[0] = RLEListGet(list, i ,&result);
         if(result != RLE_LIST_SUCCESS)
         {
+            result=RLE_LIST_ERROR;
             return result;
         }
         fputs(currentChar,out_stream);
@@ -53,15 +54,15 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
 
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE* out_stream)
 {
-   if (!list || !out_stream)
-   {
-       return RLE_LIST_NULL_ARGUMENT;
-   }
+    if (!list || !out_stream)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
     RLEListResult result;
     char* out=RLEListExportToString(list,&result);
     if(!out)
     {
-        return RLE_LIST_NULL_ARGUMENT;
+        return RLE_LIST_ERROR;
     }
     fprintf(out_stream,out);
     free(out);
