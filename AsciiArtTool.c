@@ -3,66 +3,61 @@
 //
 #include <stdio.h>
 #include "AsciiArtTool.h"
-#include <stdlib.h>
+#define CHUNCK_SIZE 100
 
-RLEList asciiArtRead(FILE* in_stream)
-{
+RLEList asciiArtRead(FILE* in_stream) {
     RLEList list = RLEListCreate();
-    FILE *myFile = fopen((const char *) in_stream, "r");
-    if(myFile==NULL)
-    {
+    // FILE *myFile = fopen((const char *) in_stream, "r");
+    if (in_stream == NULL) {
         return NULL;
     }
-    do
-    {
-        char c = fgetc(myFile);
-        RLEListAppend(list, c);
-      } while (fgetc(myFile) != EOF);
-    fclose(myFile);
-    return list;
-}
+        char buffer[CHUNCK_SIZE];
+        while (fgets(buffer, CHUNCK_SIZE, in_stream) != NULL)
+        {
+            int index = 0;
+            while (index < CHUNCK_SIZE)
+            {
+                char c = buffer[index];
+                RLEListAppend(list, c);
+                index++;
+            }
 
-RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
-{
-    FILE *myFile = fopen((const char *) out_stream, "r");
-    if(myFile==NULL)
-    {
-        return RLE_LIST_NULL_ARGUMENT;
+        }
+        // fclose(in_stream);
+        return list;
     }
-    RLEListResult result=RLE_LIST_SUCCESS;
-    int size = RLEListSize(list),index;
-    for(index=0; index<size;index++ )
+
+    RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     {
-        fputs(RLEListGet(list,index,result), myFile);
+        // FILE *myFile = fopen((const char *) out_stream, "r");
+        if (out_stream == NULL)
+        {
+            return RLE_LIST_NULL_ARGUMENT;
+        }
+        RLEListResult result = RLE_LIST_SUCCESS;
+        int size = RLEListSize(list), index;
+        for (index = 0; index < size; index++) {
+            char tmp = RLEListGet(list, index, &result);
+            fputs(&tmp, out_stream);
+        }
+        // fclose(myFile);
+        return RLE_LIST_SUCCESS;
+
     }
-    fclose(myFile);
-    return RLE_LIST_SUCCESS;
 
-}
+    RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
+        RLEListResult result = RLE_LIST_SUCCESS;
+        char *ptr = RLEListExportToString(list, &result);
+        if (ptr == NULL) {
+            return RLE_LIST_NULL_ARGUMENT;
+        }
+        // FILE *myFile = fopen((const char *) out_stream, "r");
+        if (out_stream == NULL) {
+            return RLE_LIST_NULL_ARGUMENT;
+        }
+        fprintf(out_stream, ptr);
+        return RLE_LIST_SUCCESS;
 
-RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
-{
-    char* ptr=RLEListExportToString(list,RLE_LIST_SUCCESS);
-    if (ptr==NULL)
-    {
-        return RLE_LIST_NULL_ARGUMENT;
     }
-    FILE *myFile = fopen((const char *) out_stream, "r");
-    if(myFile==NULL)
-    {
-        return RLE_LIST_NULL_ARGUMENT;
-    }
-    fprintf(myFile,ptr);
-    free(ptr);
-    fclose(myFile);
-    return RLE_LIST_SUCCESS;
-
-}
-
-
-
-
-
-
 
 
