@@ -4,14 +4,6 @@
 #include <stdlib.h>
 
 
-char* stringDuplicator(char* word ,int times);
-int main() {
-    char *word="layan";
-    char* test=stringDuplicator(word,5);
-    printf("%s",test);
-
-    return 0;
-}
 char* stringDuplicator(char* s ,int times)
 {
     if(!s || times<0)
