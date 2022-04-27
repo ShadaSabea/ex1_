@@ -11,8 +11,6 @@ char* stringDuplicator(char* s ,int times)
         printf("error\n");
         return 0;
     }
-    assert(s);
-    assert(times>0);
     int len= strlen(s);
     char* out = malloc( sizeof(*out)*len*times+1);
     if(out==NULL)
@@ -20,7 +18,6 @@ char* stringDuplicator(char* s ,int times)
         printf("error\n");
         return 0;
     }
-    assert(out);
     char* ptr=out;
     strcpy(ptr,s);
     for(int i=1; i<times; i++)
