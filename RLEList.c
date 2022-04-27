@@ -22,9 +22,8 @@ typedef struct node{
 RLEList RLEListCreate()
 {
     RLEList newList= malloc(sizeof (*newList));
-    Node ptr= malloc(sizeof(*ptr));
 
-    if(newList==NULL || ptr ==NULL)
+    if(newList==NULL )
     {
         return NULL;
     }
@@ -50,7 +49,11 @@ Node CreateNode(char letter,RLEList list)
 
     if (list->length==1)
     {
-    list->head=new;
+        Node ptr= malloc(sizeof(*ptr));
+        if(ptr==NULL)
+            return NULL;
+
+        list->head=new;
     }
     return new;
 }
@@ -58,12 +61,15 @@ Node CreateNode(char letter,RLEList list)
 
 void RLEListDestroy(RLEList list)
 {
-        while(list->head)
+
+        while(list->head!=NULL)
         {
             Node toDelete = list->head;
             list->head = list->head->next;
             free(toDelete);
         }
+        free (list->head);
+        return;
     }
 
 RLEListResult RLEListAppend(RLEList list, char value)
@@ -192,7 +198,7 @@ RLEListResult RLEListRemove(RLEList list, int index)
         else
         {
                 prev->next=node->next;
-           
+
         }
         free(node);
     }
@@ -346,9 +352,8 @@ int main ()
 
     return 0;
 }*/
-/*
 
-1 Running basicTest ... here [OK]
+/*1 Running basicTest ... here [OK]
 2 Running basicTestMacros ... [OK]
 3 Running RLEListCreateTest ... [OK]
 4 Running RLEListDestroyTest ... [OK]
@@ -356,8 +361,6 @@ int main ()
 6 Running RLEListSizeTest ... here here here here [OK]
 7 Running RLEListRemoveTest ... here here here here here [OK]
 8 Running RLEListGetTest ... [OK]
-9 Running RLEListExportToStringTest ... here here here [OK]
-10 Running RLEListMapTest ... 
-Assertion failed at /Users/shadasabea/CLionProjects/hw1/main.c:661 __currentChar == *(__string++) 
-String cmp failed on index=6 in list, got=  and expected=
-[Failed]*/
+9 Running RLEListExportToStringTest ... here here here hw1(21890,0x110826e00) malloc: Incorrect checksum for freed object 0x7faa30304150: probably modified after being freed.
+Corrupt value: 0xa31610a320a
+hw1(21890,0x110826e00) malloc: *** set a breakpoint in malloc_error_break to debug*/
