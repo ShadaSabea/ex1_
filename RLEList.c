@@ -137,63 +137,54 @@ int RLEListSize(RLEList list)
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-    if (list == NULL) {
+    if(list == NULL)
+    {
         return RLE_LIST_NULL_ARGUMENT;
     }
 
-    int listSize = RLEListSize(list);
-    if (index > listSize - 1 || index < 0) {
+    int listSize= RLEListSize(list);
+    if(index>listSize-1 || index<0)
+    {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
 
-    int currentSize = 0;
-    Node node = list->head;
-    Node prev = list->head;
+    int currentSize=0;
+    Node node=list->head;
+    Node prev=list->head;
 
 
-    while (node != NULL)
+
+    while (node!=NULL)
     {
-        currentSize += node->numOfAppears;
-        if (currentSize - 1 >= index)
+        currentSize+=node->numOfAppears;
+        if(currentSize-1>=index)
         {
             node->numOfAppears--;
+
             break;
         }
-        prev = node;
-        node = node->next;
+        prev=node;
+        node=node->next;
     }
-//if node !=null
-    if ( node->numOfAppears == 0)
-    {
-        if (prev == list->head)
-        {
-            list->head = node->next;
-            free(node);
-            return RLE_LIST_SUCCESS;
 
+    if( node!=NULL&& node->numOfAppears==0)
+    {
+
+        if(prev->character == node->next->character)
+        {
+            prev->numOfAppears+=node->next->numOfAppears;
+            prev->next=node->next->next;
+            free(node->next);
         }
         else
         {
-            if (prev->character == node->next->character)
-            {
-                prev->numOfAppears += node->next->numOfAppears;
-                prev->next = node->next->next;
-                free(node);
-                Node next=node->next;
-                if(next!=NULL)
-                {
-                    free(node->next);
-                }
-                return RLE_LIST_SUCCESS;
-
-            }
+            prev->next=node->next;
         }
+        free(node);
     }
 
-
-        return RLE_LIST_SUCCESS;
- }
-
+    return RLE_LIST_SUCCESS;
+}
 
 char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
@@ -327,10 +318,8 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     printf("%s", x);
     return 0;
 }*/
-
 /*
-1 Running basicTest ... 
-Assertion failed at /Users/shadasabea/CLionProjects/hw1/main.c:192 it == s[i++] [Failed]
+1 Running basicTest ... [OK]
 2 Running basicTestMacros ... [OK]
 3 Running RLEListCreateTest ... [OK]
 4 Running RLEListDestroyTest ... [OK]
