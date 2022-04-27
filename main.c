@@ -1,24 +1,27 @@
 #include<stdio.h>
 #include<assert.h>
 #include<string.h>
-#include<stdlib.h>
 #include "AsciiArtTool.h"
 
 #define ENCODED_FLAG "-e"
-#define INVERTED_FLAG "-i" 
+#define INVERTED_FLAG "-i"
 #define SPACE ' '
 #define AT_SIGN '@'
+#define EXPECTED_ARGC 4
+#define FLAG_INDEX 1
+#define SOURCE_INDEX 2
+#define TARGET_INDEX 3
 
 
-FILE* initInputFile(int argc, char **argv)
+FILE* initInputFile(char **argv)
 {
-    return fopen(argv[2],"r");
+    return fopen(argv[SOURCE_INDEX],"r");
 }
 
 
-FILE* initOutputFile(int argc, char** argv)
+FILE* initOutputFile(char** argv)
 {
-    return fopen(argv[3],"w");
+    return fopen(argv[TARGET_INDEX],"w");
 }
 
 
@@ -57,28 +60,28 @@ RLEListResult convertImage(char* flag, RLEList list, FILE* targetStream)
 
 int main(int argc, char **argv)
 {
-    if(argc!=4)
+    if(argc!=EXPECTED_ARGC)
     {
         printf("Usage: AsciiArtTool <flag> <source> <target>\n");
         return 0;
     }
-    if(strcmp(argv[1],INVERTED_FLAG) && strcmp(argv[1],ENCODED_FLAG))
+    if(strcmp(argv[FLAG_INDEX],INVERTED_FLAG) && strcmp(argv[FLAG_INDEX],ENCODED_FLAG))
     {
         printf("Error: Undefined flag.\n");
         printf("-i : invert option\n");
         printf("-e : encode option\n");
         return 0;
     }
-    FILE* sourceStream = initInputFile(argc,argv);
+    FILE* sourceStream = initInputFile(argv);
     if(!sourceStream)
     {
-        printf("Error: cannot open:%s\n",argv[2]);
+        printf("Error: cannot open:%s\n",argv[SOURCE_INDEX]);
         return 0;
-    } 
-    FILE* targetStream = initOutputFile(argc,argv);
+    }
+    FILE* targetStream = initOutputFile(argv);
     if(!targetStream)
     {
-        printf("Error: cannot open:%s\n",argv[3]);
+        printf("Error: cannot open:%s\n",argv[TARGET_INDEX]);
         fclose(sourceStream);
         return 0;
     }
@@ -91,7 +94,7 @@ int main(int argc, char **argv)
         fclose(targetStream);
         return 0;
     }
-    RLEListResult result = convertImage(argv[1],sourceList,targetStream);
+    RLEListResult result = convertImage(argv[FLAG_INDEX],sourceList,targetStream);
     if(result!=RLE_LIST_SUCCESS)
     {
         printf("Error: failed to complete operation...\n");
