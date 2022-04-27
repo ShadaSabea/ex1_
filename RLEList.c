@@ -29,7 +29,6 @@ RLEList RLEListCreate()
         return NULL;
     }
     newList->head= NULL;
-    //newList->head->next=NULL;
     newList->length=0;
     return newList;
 }
@@ -168,8 +167,22 @@ RLEListResult RLEListRemove(RLEList list, int index)
     }
 
     if( node!=NULL&& node->numOfAppears==0)
-    {
+    {   if (list->head==prev &&prev->numOfAppears==0)
+        {
+            list->head = list->head->next;
+            free(prev);
+            return RLE_LIST_SUCCESS;
+        }
+        printf("here ");
 
+        if(node->next==NULL)
+        {
+
+            prev->next=NULL;
+            free(node);
+
+            return RLE_LIST_SUCCESS;
+        }
         if(prev->character == node->next->character)
         {
             prev->numOfAppears+=node->next->numOfAppears;
@@ -178,7 +191,8 @@ RLEListResult RLEListRemove(RLEList list, int index)
         }
         else
         {
-            prev->next=node->next;
+                prev->next=node->next;
+           
         }
         free(node);
     }
@@ -224,8 +238,8 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     if(result!=NULL)
     {
         *result = RLE_LIST_SUCCESS;
-
     }
+
     return letter;
 
 
@@ -305,24 +319,45 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     return RLE_LIST_SUCCESS;
 
 }
-
-/*int main ()
+/*
+int main ()
 {
     RLEListResult T;
     RLEList list = RLEListCreate();
-    for (int i = 0; i < 400; ++i)
+    for (int i = 0; i < 3; ++i)
     {
-        RLEListAppend(list, 'a');
+        RLEListAppend(list, '1');
     }
+    RLEListAppend(list, '2');
+
     char *x = RLEListExportToString(list, &T);
     printf("%s", x);
+    printf("next pos\n");
+
+
+    for(int i=0;i<4;i++)
+   {
+       RLEListRemove(list, 0);
+
+       char *x = RLEListExportToString(list, &T);
+       printf("%s", x);
+       printf("next pos\n");
+ }
+
     return 0;
 }*/
 /*
-1 Running basicTest ... [OK]
+
+1 Running basicTest ... here [OK]
 2 Running basicTestMacros ... [OK]
 3 Running RLEListCreateTest ... [OK]
 4 Running RLEListDestroyTest ... [OK]
 5 Running RLEListAppendTest ... [OK]
-6 Running RLEListSizeTest ... [OK]
-*/
+6 Running RLEListSizeTest ... here here here here [OK]
+7 Running RLEListRemoveTest ... here here here here here [OK]
+8 Running RLEListGetTest ... [OK]
+9 Running RLEListExportToStringTest ... here here here [OK]
+10 Running RLEListMapTest ... 
+Assertion failed at /Users/shadasabea/CLionProjects/hw1/main.c:661 __currentChar == *(__string++) 
+String cmp failed on index=6 in list, got=  and expected=
+[Failed]*/
