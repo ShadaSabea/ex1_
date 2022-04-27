@@ -22,7 +22,6 @@ static void mergeNodes(RLEList list);
 static void resultSaver(RLEListResult *result, RLEListResult result_identifier);
 
 
-//listLen=0 when listHead is NULL
 struct RLEList_t{
     Node listHead;
     int listLen;
@@ -47,10 +46,6 @@ static Node createNode(char val)
 
 static int countNodes(RLEList list)
 {
-    if(!list)
-    {
-        return ILLEGAL_DATA;
-    }
     assert(list);
     int nodeCounter=0;
     Node ptr = list->listHead;
@@ -105,7 +100,7 @@ void RLEListDestroy(RLEList list)
         list->listHead=list->listHead->next;
         free(toDelete);
     }
-    free(list); 
+    free(list);
 }
 
 
@@ -324,3 +319,4 @@ static void resultSaver(RLEListResult *result, RLEListResult result_identifier)
         *result = result_identifier;
     }
 }
+
