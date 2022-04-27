@@ -11,26 +11,25 @@ typedef struct node{
     struct node* next;
 }*Node;
 
- struct RLEList_t{
+ struct RLEList_t {
 
-    Node head;
-    int length;
-};
+     Node head;
+     int length;
+ };
 
 
 
 RLEList RLEListCreate()
 {
     RLEList newList= malloc(sizeof (*newList));
-    Node ptr= malloc(sizeof (*ptr));
+    Node ptr= malloc(sizeof(*ptr));
 
-
-    if(newList==NULL || ptr== NULL)
+    if(newList==NULL || ptr ==NULL)
     {
         return NULL;
     }
-    newList->head= ptr;
-    newList->head->next=NULL;
+    newList->head= NULL;
+    //newList->head->next=NULL;
     newList->length=0;
     return newList;
 }
@@ -38,6 +37,7 @@ RLEList RLEListCreate()
 Node CreateNode(char letter,RLEList list)
 {
     Node new= malloc(sizeof(*new));
+
     if (new==NULL)
     {
         return NULL;
@@ -49,13 +49,10 @@ Node CreateNode(char letter,RLEList list)
     list->length++;
 
 
-
-    Node node=list->head;
-    if (node==NULL)
+    if (list->length==1)
     {
-        node=new;
+    list->head=new;
     }
-
     return new;
 }
 
@@ -126,6 +123,7 @@ int RLEListSize(RLEList list)
     {
         return -1;
     }
+
     int size=0;
     Node node=list->head;
     while (node != NULL)
@@ -139,84 +137,109 @@ int RLEListSize(RLEList list)
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-    if(list == NULL)
-    {
+    if (list == NULL) {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    int listSize= RLEListSize(list);
-    if(index>listSize || index<0)
-    {
+
+    int listSize = RLEListSize(list);
+    if (index > listSize - 1 || index < 0) {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
 
-    int currentSize=0;
-    Node node=list->head,prev=list->head;
+    int currentSize = 0;
+    Node node = list->head;
+    Node prev = list->head;
 
-    while (node!=NULL)
+
+    while (node != NULL)
     {
-        currentSize+=node->numOfAppears;
-        if(currentSize-1>=index)
+        currentSize += node->numOfAppears;
+        if (currentSize - 1 >= index)
         {
+            node->numOfAppears--;
             break;
         }
-        prev=node;
-        node=node->next;
+        prev = node;
+        node = node->next;
     }
-
-    node->numOfAppears--;
-    if(node->numOfAppears==0)
+//if node !=null
+    if ( node->numOfAppears == 0)
     {
-
-        if(prev->character == node->next->character)
+        if (prev == list->head)
         {
-            prev->numOfAppears+=node->next->numOfAppears;
-            prev->next=node->next->next;
-            free(node->next);
+            list->head = node->next;
+            free(node);
+            return RLE_LIST_SUCCESS;
+
         }
         else
         {
-            prev->next=node->next;
+            if (prev->character == node->next->character)
+            {
+                prev->numOfAppears += node->next->numOfAppears;
+                prev->next = node->next->next;
+                free(node);
+                Node next=node->next;
+                if(next!=NULL)
+                {
+                    free(node->next);
+                }
+                return RLE_LIST_SUCCESS;
+
+            }
         }
-        free(node);
     }
-    return RLE_LIST_SUCCESS;
-}
+
+
+        return RLE_LIST_SUCCESS;
+ }
+
 
 char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(list == NULL)
     {
-        *result=RLE_LIST_NULL_ARGUMENT;
-        return 0;
-    }
-
-    if(result==NULL)
-    {
-        //*result=RLE_LIST_ERROR;
+        if(result!=NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
         return 0;
     }
 
     int listSize= RLEListSize(list);
-    if(index<0 || index>listSize)
+    if(index<0 || index>listSize-1)
     {
-        *result=RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        if(result!=NULL)
+        {
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
         return 0;
     }
-
     int currentSize=0;
     char letter;
-    Node node=list->head;
+    Node node=list->head,prev=node;
+
     while (node!=NULL)
     {
         currentSize += node->numOfAppears;
-        if (currentSize-1 >= index) {
+        if (currentSize-1 >= index)
+        {  prev=node;
             break;
         }
         node=node->next;
     }
-    letter=node->character;
-    *result=RLE_LIST_SUCCESS;
+
+    letter=prev->character;
+    if(result!=NULL)
+    {
+        *result = RLE_LIST_SUCCESS;
+
+    }
     return letter;
+
+
+
+
 }
 
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
@@ -226,8 +249,6 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         *result = RLE_LIST_NULL_ARGUMENT;
         return NULL;
     }
-
-
     Node node = list->head;
     char *exportedToString = malloc((sizeof(*exportedToString)*EXPANDED_LENGTH*list->length)+1);
     if(exportedToString==NULL)
@@ -294,4 +315,25 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 
 }
 
+/*int main ()
+{
+    RLEListResult T;
+    RLEList list = RLEListCreate();
+    for (int i = 0; i < 400; ++i)
+    {
+        RLEListAppend(list, 'a');
+    }
+    char *x = RLEListExportToString(list, &T);
+    printf("%s", x);
+    return 0;
+}*/
 
+/*
+1 Running basicTest ... 
+Assertion failed at /Users/shadasabea/CLionProjects/hw1/main.c:192 it == s[i++] [Failed]
+2 Running basicTestMacros ... [OK]
+3 Running RLEListCreateTest ... [OK]
+4 Running RLEListDestroyTest ... [OK]
+5 Running RLEListAppendTest ... [OK]
+6 Running RLEListSizeTest ... [OK]
+*/
