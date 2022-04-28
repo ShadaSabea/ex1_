@@ -447,3 +447,15 @@ int main ()
 }
 
 */
+/*
+1 Running basicTest ... here [OK]
+2 Running basicTestMacros ... [OK]
+3 Running RLEListCreateTest ... [OK]
+4 Running RLEListDestroyTest ... [OK]
+5 Running RLEListAppendTest ... [OK]
+6 Running RLEListSizeTest ... here here here here [OK]
+7 Running RLEListRemoveTest ... here here here here here [OK]
+8 Running RLEListGetTest ... [OK]
+9 Running RLEListExportToStringTest ... here here here [OK]
+10 Running RLEListMapTest ... [OK]
+11 Running RLEListMapAndExportTest ... [OK]*/
