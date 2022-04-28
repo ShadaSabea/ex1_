@@ -61,15 +61,13 @@ Node CreateNode(char letter,RLEList list)
 
 void RLEListDestroy(RLEList list)
 {
-
         while(list->head!=NULL)
         {
             Node toDelete = list->head;
             list->head = list->head->next;
             free(toDelete);
         }
-        free (list->head);
-        return;
+        free(list);
     }
 
 RLEListResult RLEListAppend(RLEList list, char value)
@@ -253,13 +251,30 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 
 }
 
+
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
 
     if (list == NULL)
-    {
+    { if(result==NULL)
+        {
+            return NULL;
+        }
         *result = RLE_LIST_NULL_ARGUMENT;
         return NULL;
     }
+
+    if(list->length==0)
+    {
+        if(result!=NULL)
+        {
+            *result=RLE_LIST_SUCCESS;
+            return NULL;
+        }
+        else return NULL;
+    }
+
+
+    
     Node node = list->head;
     char *exportedToString = malloc((sizeof(*exportedToString)*EXPANDED_LENGTH*list->length)+1);
     if(exportedToString==NULL)
@@ -325,35 +340,40 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     return RLE_LIST_SUCCESS;
 
 }
-/*
+
 int main ()
 {
     RLEListResult T;
     RLEList list = RLEListCreate();
-    for (int i = 0; i < 3; ++i)
-    {
+   for (int i = 0; i < 400; ++i)
+   {
         RLEListAppend(list, '1');
-    }
-    RLEListAppend(list, '2');
+   }
+
 
     char *x = RLEListExportToString(list, &T);
     printf("%s", x);
     printf("next pos\n");
 
 
-    for(int i=0;i<4;i++)
-   {
-       RLEListRemove(list, 0);
+   // for(int i=0;i<4;i++)
+   //{
+     //  RLEListDestroy(list);
+      // printf("destroyed\n");
+    // x = RLEListExportToString(list, &T);
+  //  printf("%s\n", x);
+ //   printf("next pos\n");
 
-       char *x = RLEListExportToString(list, &T);
-       printf("%s", x);
-       printf("next pos\n");
- }
+      // char *x = RLEListExportToString(list, &T);
+       //printf("%s", x);
+       //printf("next pos\n");
+ //}
 
     return 0;
-}*/
-
-/*1 Running basicTest ... here [OK]
+}
+/*
+/Users/shadasabea/CLionProjects/hw1/cmake-build-debug/hw1
+1 Running basicTest ... here [OK]
 2 Running basicTestMacros ... [OK]
 3 Running RLEListCreateTest ... [OK]
 4 Running RLEListDestroyTest ... [OK]
@@ -361,6 +381,8 @@ int main ()
 6 Running RLEListSizeTest ... here here here here [OK]
 7 Running RLEListRemoveTest ... here here here here here [OK]
 8 Running RLEListGetTest ... [OK]
-9 Running RLEListExportToStringTest ... here here here hw1(21890,0x110826e00) malloc: Incorrect checksum for freed object 0x7faa30304150: probably modified after being freed.
-Corrupt value: 0xa31610a320a
-hw1(21890,0x110826e00) malloc: *** set a breakpoint in malloc_error_break to debug*/
+9 Running RLEListExportToStringTest ... here here here hw1(26321,0x117379e00) malloc: Incorrect checksum for freed object 0x7fd3f9405ba0: probably modified after being freed.
+Corrupt value: 0x40000a31610a320a
+hw1(26321,0x117379e00) malloc: *** set a breakpoint in malloc_error_break to debug
+
+Process finished with exit code 134 (interrupted by signal 6: SIGABRT)*/
