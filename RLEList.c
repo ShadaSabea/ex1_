@@ -4,6 +4,7 @@
 #include <string.h>
 
 
+
 typedef struct node{
     int numOfAppears;
     char character;
@@ -15,8 +16,19 @@ typedef struct node{
      Node head;
      int length;
  };
+Node CreateNode(char letter,RLEList list);
+bool CheckResultIsNull(RLEListResult *result);
+int countPlaces(int num);
+int countPlacesNeedList(RLEList list);
+void Rearrange(RLEList list);
 
 
+bool CheckResultIsNull(RLEListResult *result)
+{
+     if(result==NULL)
+         return true;
+     return false;
+}
 
 RLEList RLEListCreate()
 {
@@ -207,7 +219,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
     if(list == NULL)
     {
-        if(result!=NULL)
+        if(!CheckResultIsNull(result))
         {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
@@ -217,7 +229,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     int listSize= RLEListSize(list);
     if(index<0 || index>listSize-1)
     {
-        if(result!=NULL)
+        if(!CheckResultIsNull(result))
         {
             *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         }
@@ -238,7 +250,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     }
 
     letter=prev->character;
-    if(result!=NULL)
+    if(!CheckResultIsNull(result))
     {
         *result = RLE_LIST_SUCCESS;
     }
@@ -272,26 +284,37 @@ int countPlacesNeedList(RLEList list)
 }
 
 
-char* RLEListExportToString(RLEList list, RLEListResult* result) {
+char* RLEListExportToString(RLEList list, RLEListResult* result)
+{
+
+    char *str = malloc((sizeof(*str)+1));
+    if(str==NULL)
+    { if(!CheckResultIsNull(result))
+        {
+            *result= RLE_LIST_OUT_OF_MEMORY;
+        }
+        return NULL;
+    }
+
+    str[0]='\0';
+
+
+
 
     if (list == NULL)
-    { if(result==NULL)
+    { if(!CheckResultIsNull(result))
         {
-            return NULL;
+            *result=RLE_LIST_NULL_ARGUMENT;
         }
-        *result = RLE_LIST_NULL_ARGUMENT;
-        return NULL;
-        //return /0;
+            return NULL;
     }
 
     if(list->length==0)
-    {
-        if(result!=NULL)
+    {if(!CheckResultIsNull(result))
         {
             *result=RLE_LIST_SUCCESS;
-            return NULL;
         }
-        else return NULL;
+        return  str;
     }
 
 
@@ -302,21 +325,28 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
     char *exportedToString = malloc((sizeof(*exportedToString)*((size))+1));
     if(exportedToString==NULL)
     {
-        *result=RLE_LIST_NULL_ARGUMENT;
+        if(!CheckResultIsNull(result))
+        {
+            *result=RLE_LIST_OUT_OF_MEMORY;
+        }
         return NULL;
     }
     char *ptrExportedToString=exportedToString;
     int currentLen;
     while(node!=NULL)
     {
-       currentLen=sprintf(ptrExportedToString,"%c%d\n",node->character,node->numOfAppears);
+        currentLen=sprintf(ptrExportedToString,"%c%d\n",node->character,node->numOfAppears);
         ptrExportedToString+=currentLen;
         node=node->next;
 
     }
-    *result=RLE_LIST_SUCCESS;
-    return exportedToString;
 
+   if(!CheckResultIsNull(result))
+   {
+       *result = RLE_LIST_SUCCESS;
+   }
+
+    return exportedToString;
 
 }
 
@@ -417,16 +447,3 @@ int main ()
 }
 
 */
-/*3varrrrrrr*/
-/*
-/Users/shadasabea/CLionProjects/hw1/cmake-build-debug/hw1
-1 Running basicTest ... here [OK]
-2 Running basicTestMacros ... [OK]
-3 Running RLEListCreateTest ... [OK]
-4 Running RLEListDestroyTest ... [OK]
-5 Running RLEListAppendTest ... [OK]
-6 Running RLEListSizeTest ... here here here here [OK]
-7 Running RLEListRemoveTest ... here here here here here [OK]
-8 Running RLEListGetTest ... [OK]
-9 Running RLEListExportToStringTest ... here here here [OK]
-10 Running RLEListMapTest ... [OK]*/
