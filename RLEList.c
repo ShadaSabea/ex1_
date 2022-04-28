@@ -337,6 +337,7 @@ void Rearrange(RLEList list)
         }
         node1->numOfAppears+=count;
         node1->next=node2;
+        count=0;
         node1=node1->next;
     }
 }
@@ -360,6 +361,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
    }
 
     Rearrange(list);
+
     return RLE_LIST_SUCCESS;
 
 }
@@ -415,6 +417,7 @@ int main ()
 }
 
 */
+/*3varrrrrrr*/
 /*
 /Users/shadasabea/CLionProjects/hw1/cmake-build-debug/hw1
 1 Running basicTest ... here [OK]
@@ -426,8 +429,4 @@ int main ()
 7 Running RLEListRemoveTest ... here here here here here [OK]
 8 Running RLEListGetTest ... [OK]
 9 Running RLEListExportToStringTest ... here here here [OK]
-10 Running RLEListMapTest ... 
-Assertion failed at /Users/shadasabea/CLionProjects/hw1/main.c:679 __currentChar == *(__string++) 
-String cmp failed on index=6 in list, got=  and expected=
-[Failed]
-*/
+10 Running RLEListMapTest ... [OK]*/
