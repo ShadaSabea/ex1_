@@ -8,8 +8,9 @@
 RLEList asciiArtRead(FILE* in_stream) {
     RLEList list = RLEListCreate();
     // FILE *myFile = fopen((const char *) in_stream, "r");
-    if (in_stream == NULL) {
-        return NULL;
+    if (in_stream == NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
     }
         char buffer[CHUNCK_SIZE];
         while (fgets(buffer, CHUNCK_SIZE, in_stream) != NULL)
@@ -49,7 +50,7 @@ RLEList asciiArtRead(FILE* in_stream) {
         RLEListResult result = RLE_LIST_SUCCESS;
         char *ptr = RLEListExportToString(list, &result);
         if (ptr == NULL) {
-            return RLE_LIST_NULL_ARGUMENT;
+            return RLE_LIST_OUT_OF_MEMORY;
         }
         // FILE *myFile = fopen((const char *) out_stream, "r");
         if (out_stream == NULL) {
