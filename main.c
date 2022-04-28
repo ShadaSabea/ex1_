@@ -45,14 +45,7 @@ int main(int argc, char** argv)
     if(!strcmp(argv[2], "-e"))
     {
         result = asciiArtPrintEncoded(tempList, outputFile);
-
-        if (result != RLE_LIST_SUCCESS)
-        {
-            //print_errors(stderr, "building list ");
-            closeFiles(outputFile,inputFile);
-            RLEListDestroy(tempList);
-            return 0;
-        }
+        
         closeFiles(outputFile,inputFile);
         RLEListDestroy(tempList);
         return 0;
@@ -70,6 +63,7 @@ int main(int argc, char** argv)
             RLEListDestroy(tempList);
             return 0;
         }
+         result=asciiArtPrint(tempList,outputFile);
         closeFiles(outputFile,inputFile);
         RLEListDestroy(tempList);
         return 0;
