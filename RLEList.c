@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EXPANDED_LENGTH 2
 
 typedef struct node{
     int numOfAppears;
@@ -251,6 +250,27 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 
 }
 
+int countPlaces(int num)
+{int count=0;
+    while(num!=0)
+    {
+        count++;
+        num=num/10;
+    }
+    return count;
+}
+
+int countPlacesNeedList(RLEList list)
+{int count=0;
+    Node node=list->head;
+    while (node!=NULL)
+    {
+        count+=countPlaces(node->numOfAppears);
+        node=node->next;
+    }
+    return count;
+}
+
 
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
 
@@ -261,6 +281,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         }
         *result = RLE_LIST_NULL_ARGUMENT;
         return NULL;
+        //return /0;
     }
 
     if(list->length==0)
@@ -274,9 +295,11 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
     }
 
 
-    
+
     Node node = list->head;
-    char *exportedToString = malloc((sizeof(*exportedToString)*EXPANDED_LENGTH*list->length)+1);
+    int size=countPlacesNeedList(list)+(2*list->length);
+
+    char *exportedToString = malloc((sizeof(*exportedToString)*((size))+1));
     if(exportedToString==NULL)
     {
         *result=RLE_LIST_NULL_ARGUMENT;
@@ -341,6 +364,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 
 }
 
+/*
 int main ()
 {
     RLEListResult T;
@@ -349,11 +373,29 @@ int main ()
    {
         RLEListAppend(list, '1');
    }
+    for (int i = 0; i < 4000; ++i)
+    {
+        RLEListAppend(list, '2');
+
+    }
 
 
     char *x = RLEListExportToString(list, &T);
-    printf("%s", x);
+    printf("%c", x[0]);
+    printf("%c", x[1]);
+    printf("%c", x[2]);
+    printf("%c", x[3]);
+    printf("%c", x[4]);
+    printf("%c", x[5]);
+    printf("%c", x[6]);
+    printf("%c", x[7]);
+    printf("%c", x[8]);
+    printf("%c", x[9]);
+    printf("%c", x[10]);
+
+
     printf("next pos\n");
+
 
 
    // for(int i=0;i<4;i++)
@@ -371,6 +413,8 @@ int main ()
 
     return 0;
 }
+
+*/
 /*
 /Users/shadasabea/CLionProjects/hw1/cmake-build-debug/hw1
 1 Running basicTest ... here [OK]
@@ -381,8 +425,9 @@ int main ()
 6 Running RLEListSizeTest ... here here here here [OK]
 7 Running RLEListRemoveTest ... here here here here here [OK]
 8 Running RLEListGetTest ... [OK]
-9 Running RLEListExportToStringTest ... here here here hw1(26321,0x117379e00) malloc: Incorrect checksum for freed object 0x7fd3f9405ba0: probably modified after being freed.
-Corrupt value: 0x40000a31610a320a
-hw1(26321,0x117379e00) malloc: *** set a breakpoint in malloc_error_break to debug
-
-Process finished with exit code 134 (interrupted by signal 6: SIGABRT)*/
+9 Running RLEListExportToStringTest ... here here here [OK]
+10 Running RLEListMapTest ... 
+Assertion failed at /Users/shadasabea/CLionProjects/hw1/main.c:679 __currentChar == *(__string++) 
+String cmp failed on index=6 in list, got=  and expected=
+[Failed]
+*/
