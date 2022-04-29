@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+#define NULL_ARG_SENT -1
 
 typedef struct node{
     int numOfAppears;
@@ -16,11 +16,15 @@ typedef struct node{
      Node head;
      int length;
  };
+
+
 Node CreateNode(char letter,RLEList list);
 bool CheckResultIsNull(RLEListResult *result);
 int countPlaces(int num);
 int countPlacesNeedList(RLEList list);
 void Rearrange(RLEList list);
+bool CheckResultIsNull(RLEListResult *result);
+
 
 
 bool CheckResultIsNull(RLEListResult *result)
@@ -32,7 +36,7 @@ bool CheckResultIsNull(RLEListResult *result)
 
 RLEList RLEListCreate()
 {
-    RLEList newList= malloc(sizeof (*newList));
+    RLEList newList= malloc(sizeof(*newList));
 
     if(newList==NULL )
     {
@@ -60,10 +64,6 @@ Node CreateNode(char letter,RLEList list)
 
     if (list->length==1)
     {
-        Node ptr= malloc(sizeof(*ptr));
-        if(ptr==NULL)
-            return NULL;
-
         list->head=new;
     }
     return new;
@@ -79,55 +79,43 @@ void RLEListDestroy(RLEList list)
             free(toDelete);
         }
         free(list);
-    }
+}
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
-
-    if(list==NULL || value==0)
+    if(list==NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
+
     Node node=list->head;
-
-
-
-if(node==NULL)
-{
+   if(node==NULL)
+    {
     Node newNode;
     newNode = CreateNode(value,list);
     if(newNode == NULL)
     {
         return RLE_LIST_OUT_OF_MEMORY;
     }
-    newNode->next=NULL;
 
     return RLE_LIST_SUCCESS;
-}
-
+    }
         while(node->next != NULL)
         {
             node = node->next;
         }
-
-
-
-    if(node->character == value)
-    {
+       if(node->character == value)
+        {
         node->numOfAppears++;
         return RLE_LIST_SUCCESS;
-    }
-
-    Node newNode;
-    newNode = CreateNode(value,list);
-
-    if(newNode == NULL)
-    {
+        }
+       Node newNode;
+       newNode = CreateNode(value,list);
+      if(newNode == NULL)
+       {
         return RLE_LIST_OUT_OF_MEMORY;
-    }
-
-    node->next=newNode;
-
+       }
+      node->next=newNode;
     return RLE_LIST_SUCCESS;
 }
 
@@ -135,9 +123,8 @@ int RLEListSize(RLEList list)
 {
     if(list == NULL)
     {
-        return -1;
+        return NULL_ARG_SENT;
     }
-
     int size=0;
     Node node=list->head;
     while (node != NULL)
@@ -145,7 +132,6 @@ int RLEListSize(RLEList list)
         size+= node->numOfAppears;
         node= node->next;
     }
-
     return size;
 }
 
@@ -155,47 +141,36 @@ RLEListResult RLEListRemove(RLEList list, int index)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-
     int listSize= RLEListSize(list);
     if(index>listSize-1 || index<0)
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-
     int currentSize=0;
     Node node=list->head;
     Node prev=list->head;
-
-
-
     while (node!=NULL)
     {
         currentSize+=node->numOfAppears;
         if(currentSize-1>=index)
         {
             node->numOfAppears--;
-
             break;
         }
         prev=node;
         node=node->next;
     }
-
-    if( node!=NULL&& node->numOfAppears==0)
+    if( node!=NULL && node->numOfAppears==0)
     {   if (list->head==prev &&prev->numOfAppears==0)
         {
             list->head = list->head->next;
             free(prev);
             return RLE_LIST_SUCCESS;
         }
-        printf("here ");
-
         if(node->next==NULL)
         {
-
             prev->next=NULL;
             free(node);
-
             return RLE_LIST_SUCCESS;
         }
         if(prev->character == node->next->character)
@@ -207,11 +182,9 @@ RLEListResult RLEListRemove(RLEList list, int index)
         else
         {
                 prev->next=node->next;
-
         }
         free(node);
     }
-
     return RLE_LIST_SUCCESS;
 }
 
@@ -225,7 +198,6 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         }
         return 0;
     }
-
     int listSize= RLEListSize(list);
     if(index<0 || index>listSize-1)
     {
@@ -238,7 +210,6 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     int currentSize=0;
     char letter;
     Node node=list->head,prev=node;
-
     while (node!=NULL)
     {
         currentSize += node->numOfAppears;
@@ -248,22 +219,17 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
         }
         node=node->next;
     }
-
     letter=prev->character;
     if(!CheckResultIsNull(result))
     {
         *result = RLE_LIST_SUCCESS;
     }
-
     return letter;
-
-
-
-
 }
 
 int countPlaces(int num)
-{int count=0;
+{
+    int count=0;
     while(num!=0)
     {
         count++;
@@ -271,9 +237,9 @@ int countPlaces(int num)
     }
     return count;
 }
-
 int countPlacesNeedList(RLEList list)
-{int count=0;
+{
+    int count=0;
     Node node=list->head;
     while (node!=NULL)
     {
@@ -286,21 +252,16 @@ int countPlacesNeedList(RLEList list)
 
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
-
     char *str = malloc((sizeof(*str)+1));
     if(str==NULL)
-    { if(!CheckResultIsNull(result))
+    {
+        if(!CheckResultIsNull(result))
         {
             *result= RLE_LIST_OUT_OF_MEMORY;
         }
         return NULL;
     }
-
     str[0]='\0';
-
-
-
-
     if (list == NULL)
     { if(!CheckResultIsNull(result))
         {
@@ -308,7 +269,6 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         }
             return NULL;
     }
-
     if(list->length==0)
     {if(!CheckResultIsNull(result))
         {
@@ -316,12 +276,8 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         }
         return  str;
     }
-
-
-
     Node node = list->head;
-    int size=countPlacesNeedList(list)+(2*list->length);
-
+    int size=countPlacesNeedList(list)+(2*(list->length));
     char *exportedToString = malloc((sizeof(*exportedToString)*((size))+1));
     if(exportedToString==NULL)
     {
@@ -338,18 +294,13 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         currentLen=sprintf(ptrExportedToString,"%c%d\n",node->character,node->numOfAppears);
         ptrExportedToString+=currentLen;
         node=node->next;
-
     }
-
    if(!CheckResultIsNull(result))
    {
        *result = RLE_LIST_SUCCESS;
    }
-
     return exportedToString;
-
 }
-
 
 void Rearrange(RLEList list)
 {
@@ -372,7 +323,6 @@ void Rearrange(RLEList list)
     }
 }
 
-
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
    if(list==NULL|| map_function==NULL)
@@ -389,73 +339,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
        node->character=toReplace;
        node=node->next;
    }
-
     Rearrange(list);
-
     return RLE_LIST_SUCCESS;
-
 }
 
-/*
-int main ()
-{
-    RLEListResult T;
-    RLEList list = RLEListCreate();
-   for (int i = 0; i < 400; ++i)
-   {
-        RLEListAppend(list, '1');
-   }
-    for (int i = 0; i < 4000; ++i)
-    {
-        RLEListAppend(list, '2');
-
-    }
-
-
-    char *x = RLEListExportToString(list, &T);
-    printf("%c", x[0]);
-    printf("%c", x[1]);
-    printf("%c", x[2]);
-    printf("%c", x[3]);
-    printf("%c", x[4]);
-    printf("%c", x[5]);
-    printf("%c", x[6]);
-    printf("%c", x[7]);
-    printf("%c", x[8]);
-    printf("%c", x[9]);
-    printf("%c", x[10]);
-
-
-    printf("next pos\n");
-
-
-
-   // for(int i=0;i<4;i++)
-   //{
-     //  RLEListDestroy(list);
-      // printf("destroyed\n");
-    // x = RLEListExportToString(list, &T);
-  //  printf("%s\n", x);
- //   printf("next pos\n");
-
-      // char *x = RLEListExportToString(list, &T);
-       //printf("%s", x);
-       //printf("next pos\n");
- //}
-
-    return 0;
-}
-
-*/
-/*
-1 Running basicTest ... here [OK]
-2 Running basicTestMacros ... [OK]
-3 Running RLEListCreateTest ... [OK]
-4 Running RLEListDestroyTest ... [OK]
-5 Running RLEListAppendTest ... [OK]
-6 Running RLEListSizeTest ... here here here here [OK]
-7 Running RLEListRemoveTest ... here here here here here [OK]
-8 Running RLEListGetTest ... [OK]
-9 Running RLEListExportToStringTest ... here here here [OK]
-10 Running RLEListMapTest ... [OK]
-11 Running RLEListMapAndExportTest ... [OK]*/
