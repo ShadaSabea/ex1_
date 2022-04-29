@@ -11,16 +11,14 @@
 #define INVERTED_CHAR "-i"
 #define ADDRESS_SIGN '@'
 
-//void print_errors(FILE* file, char* message);
-//void closeFiles(FILE* output ,FILE* input);
-char Alternate(char value);
+
+char alternate(char value);
 
 
 int main(int argc, char** argv)
 {
     if(argc!=LENGTH)
     {
-        //print_errors(stderr, "num of inputs");
         return 0;
     }
     if(strcmp(argv[FLAG],ENCODED_CHAR)!=0  &&  strcmp(argv[FLAG],INVERTED_CHAR)!=0)
@@ -28,15 +26,10 @@ int main(int argc, char** argv)
         return 0;
     }
 
-  //  if(argv[SOURCE]==NULL)
-   // {
-        //print_errors(stderr, "the input file");
-    //    return 0;
-   // }
+
     FILE *inputFile=fopen((argv[SOURCE]) ,"r");
     if(inputFile==NULL)
     {
-        //print_errors(stderr,"opening a file");
         return 0;
     }
     FILE *outputFile=fopen((argv[TARGET]) ,"w");
@@ -58,6 +51,7 @@ int main(int argc, char** argv)
     {
 
         result = asciiArtPrintEncoded(tempList, outputFile);
+        //no need to check the result
         fclose(outputFile);
         fclose(inputFile);
         RLEListDestroy(tempList);
@@ -67,10 +61,9 @@ int main(int argc, char** argv)
 
     if(strcmp(argv[FLAG], INVERTED_CHAR)==0)
     {
-        result= RLEListMap(tempList,Alternate);
+        result= RLEListMap(tempList,alternate);
         if(result!=RLE_LIST_SUCCESS)
         {
-            //print_errors(stderr, "building list ");
             fclose(outputFile);
             fclose(inputFile);
             RLEListDestroy(tempList);
@@ -83,7 +76,10 @@ int main(int argc, char** argv)
         return 0;
     }
 }
-char Alternate(char value)
+
+
+
+char alternate(char value)
 {
     if(value==ADDRESS_SIGN)
     {
