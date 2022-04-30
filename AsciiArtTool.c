@@ -9,7 +9,7 @@
 RLEList asciiArtRead(FILE* in_stream)
 {
     RLEList list = RLEListCreate();
-    if(list!=NULL)
+    if(list==NULL)
     {
         return NULL;
     }
