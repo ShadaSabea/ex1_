@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "AsciiArtTool.h"
-#define CHUNCK_SIZE 256
 
 RLEList asciiArtRead(FILE* in_stream)
 {
