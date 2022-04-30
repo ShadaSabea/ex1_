@@ -48,8 +48,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         }
         fputs(put_char, out_stream);
     }
-   // put_char[0]='\n';
-   // fputs(put_char, out_stream);
+  
 
     return result;
 }
