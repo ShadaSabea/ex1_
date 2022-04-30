@@ -2,7 +2,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define CHUNK_SIZE 256
 
 RLEList asciiArtRead(FILE* in_stream)
 {
