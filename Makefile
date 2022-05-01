@@ -1,15 +1,17 @@
-CC = gcc;
-OBJS = RLEList.o ./tool/AsciiArtTool.o ./tool/main.o
-EXEC = prog
-DEBUG_FLAG = -g
-COMP_FLAG = -std=c99 -Wall-Werror
+CC = gcc
+RLELIST= /home/mtm/public/2122b/ex1/RLEList
+OBJS = RLEList.o tool/AsciiArtTool.o tool/main.o
+EXEC = AsciiArtTool
+DEBUG_FLAG =
+COMP_FLAG = -std=c99 -I/home/mtm/public/2122b/ex1 -Itool -Wall -pedantic -errors -Werror -DNDEBUG
+
 $(EXEC) : $(OBJS)
-	$(CC) $(DEBUG_FLAG) $(OBJS) -O
-RLEList.0 : RLEList.c RLEList.h
-	$(CC) -c $(DEBUG_FLAG) $(COMP_FLAG) $*.c
-AsciiArtTool.o : AsciiArtTool.c AsciiArtTool.h
-	$(CC) -c $(DEBUG_FLAG) $(COMP_FLAG) $*.c
-main.o : main.c RLEList.h AsciiArtTool.h
-	$(CC) -c $(DEBUG_FLAG) $(COMP_FLAG) $*.c
+	$(CC) $(COMP_FLAG) $(DEBUG_FLAG) $(OBJS) -o $@
+RLEList.o : RLEList.c $(RLELIST).h
+	$(CC) -c $(COMP_FLAG) $(DEBUG_FLAG) $*.c -o $@
+tool/AsciiArtTool.o : tool/AsciiArtTool.c tool/AsciiArtTool.h $(RLELIST).h
+	$(CC) -c $(COMP_FLAG) $(DEBUG_FLAG) $*.c -o $@
+tool/main.o : tool/main.c $(RLELIST).h tool/AsciiArtTool.h
+	$(CC) -c $(COMP_FLAG) $(DEBUG_FLAG) $*.c -o $@
 clean:
 	rm -f $(OBJS) $(EXEC)
