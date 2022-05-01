@@ -33,7 +33,6 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     RLEListResult result;
     int size = RLEListSize(list), index;
     char put_char[2];
-
     put_char[1]='\0';
 
     for (index = 0; index < size; index++)
@@ -47,7 +46,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         }
         fputs(put_char, out_stream);
     }
-  
+
 
     return result;
 }
