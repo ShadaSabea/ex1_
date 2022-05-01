@@ -43,9 +43,9 @@ int main(int argc, char** argv)
     tempList=asciiArtRead(inputFile);
     if(tempList==NULL)
     { fclose(inputFile);
-      fclose(outputFile);
+        fclose(outputFile);
         return 0;
-     }
+    }
 
     if(strcmp(argv[FLAG],ENCODED_CHAR)==0)
     {
