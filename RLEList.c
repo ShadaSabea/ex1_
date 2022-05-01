@@ -342,4 +342,3 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     Rearrange(list);
     return RLE_LIST_SUCCESS;
 }
-
